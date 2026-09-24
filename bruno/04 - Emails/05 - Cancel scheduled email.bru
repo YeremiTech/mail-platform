@@ -1,0 +1,27 @@
+meta {
+  name: Cancel scheduled email
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/emails/{{scheduledMailId}}
+  body: none
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

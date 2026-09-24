@@ -1,0 +1,32 @@
+meta {
+  name: Create suppression
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/suppressions
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{ "email": "{{suppressionEmail}}", "reason": "MANUAL" }
+}
+
+tests {
+  test("HTTP 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

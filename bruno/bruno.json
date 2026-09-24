@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "name": "Mail Platform v0.10.6 - Complete API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git",
+    ".DS_Store"
+  ]
+}

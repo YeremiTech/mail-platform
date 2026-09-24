@@ -1,0 +1,46 @@
+meta {
+  name: Create transactional campaign
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/campaigns
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "subject": "Bruno transactional campaign {{runId}}",
+  "templateKey": "{{templateSlug}}",
+  "commonVariables": {"name": "Campaign"},
+  "attachmentIds": [],
+  "recipients": [
+    {"email": "{{campaignRecipient}}", "displayName": "Campaign One", "variables": {"name": "Campaign One"}, "consent": false},
+    {"email": "campaign-two-{{runId}}@example.test", "displayName": "Campaign Two", "variables": {"name": "Campaign Two"}, "consent": false}
+  ],
+  "purpose": "TRANSACTIONAL"
+}
+}
+
+script:post-response {
+  const body = res.getBody(); if (body && body.batchId) bru.setVar("campaignId", body.batchId);
+}
+
+tests {
+  test("HTTP 202", function() {
+    expect(res.getStatus()).to.equal(202);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

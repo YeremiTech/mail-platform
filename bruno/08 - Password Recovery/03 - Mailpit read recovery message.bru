@@ -1,0 +1,30 @@
+meta {
+  name: Mailpit read recovery message
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{mailpitUrl}}/api/v1/message/{{recoveryMessageId}}
+  body: none
+  auth: none
+}
+
+script:post-response {
+  const body = res.getBody();
+  const text = (body && body.Text) || "";
+  const match = text.match(/(^|\D)(\d{6})(?!\d)/);
+  if (match) bru.setVar("recoveryCode", match[2]);
+  test("Recovery message contains six-digit code", function() { expect(match).to.exist; });
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

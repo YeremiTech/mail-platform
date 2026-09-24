@@ -1,0 +1,32 @@
+meta {
+  name: OpenAPI JSON
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/v3/api-docs
+  body: none
+  auth: none
+}
+
+headers {
+  X-Client-Id: admin
+  X-Internal-Api-Key: {{adminApiKey}}
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("OpenAPI has paths", function() {
+    const body = res.getBody();
+    expect(body).to.have.property("paths");
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

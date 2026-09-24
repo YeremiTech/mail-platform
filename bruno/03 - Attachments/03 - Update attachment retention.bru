@@ -1,0 +1,37 @@
+meta {
+  name: Update attachment retention
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/v1/admin/attachments/{{attachmentId}}/retention
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: admin
+  X-Internal-Api-Key: {{adminApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "clientId": "{{testClientId}}",
+  "legalHold": false,
+  "retentionUntil": "2099-12-31T23:59:59Z",
+  "reason": "Bruno automated retention verification"
+}
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

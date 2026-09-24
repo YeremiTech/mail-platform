@@ -1,0 +1,45 @@
+meta {
+  name: Schedule future email
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/emails
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+  Idempotency-Key: bruno-scheduled-{{runId}}
+}
+
+body:json {
+{
+  "subject": "Bruno scheduled email {{runId}}",
+  "templateKey": "{{templateSlug}}",
+  "variables": {"name": "Bruno Scheduled"},
+  "recipients": [{"email": "scheduled-{{runId}}@example.test", "type": "TO", "displayName": "Scheduled"}],
+  "attachmentIds": [],
+  "priority": "TRANSACTIONAL",
+  "scheduledAt": "2099-12-31T23:59:59Z"
+}
+}
+
+script:post-response {
+  const body = res.getBody(); if (body && body.id) bru.setVar("scheduledMailId", body.id);
+}
+
+tests {
+  test("HTTP 202", function() {
+    expect(res.getStatus()).to.equal(202);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

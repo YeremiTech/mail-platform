@@ -1,0 +1,46 @@
+meta {
+  name: Send document copy
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/documents/copies
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+  Idempotency-Key: bruno-document-{{runId}}
+}
+
+body:json {
+{
+  "documentType": "FACTURA",
+  "documentNumber": "F001-{{runId}}",
+  "customerName": "Cliente Bruno",
+  "issuerName": "Mail Platform",
+  "amount": 25.50,
+  "currency": "PEN",
+  "recipients": [{"email": "{{documentRecipient}}", "displayName": "Cliente Bruno"}],
+  "attachmentIds": ["{{attachmentId}}"]
+}
+}
+
+script:post-response {
+  const body = res.getBody(); if (body && body.id) bru.setVar("documentMailId", body.id);
+}
+
+tests {
+  test("HTTP 202", function() {
+    expect(res.getStatus()).to.equal(202);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

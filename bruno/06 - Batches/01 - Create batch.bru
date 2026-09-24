@@ -1,0 +1,45 @@
+meta {
+  name: Create batch
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/batches
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "subject": "Bruno batch {{runId}}",
+  "templateKey": "{{templateSlug}}",
+  "commonVariables": {"name": "Batch"},
+  "attachmentIds": ["{{attachmentId}}"],
+  "recipients": [
+    {"email": "{{batchRecipient}}", "displayName": "Batch One", "variables": {"name": "Batch One"}},
+    {"email": "batch-two-{{runId}}@example.test", "displayName": "Batch Two", "variables": {"name": "Batch Two"}}
+  ]
+}
+}
+
+script:post-response {
+  const body = res.getBody(); if (body && body.batchId) bru.setVar("batchId", body.batchId);
+}
+
+tests {
+  test("HTTP 202", function() {
+    expect(res.getStatus()).to.equal(202);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

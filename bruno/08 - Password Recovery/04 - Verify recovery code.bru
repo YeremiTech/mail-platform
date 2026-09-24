@@ -1,0 +1,38 @@
+meta {
+  name: Verify recovery code
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/password-recovery/challenges/{{challengeId}}/verify
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{ "code": "{{recoveryCode}}" }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.grantId) bru.setVar("grantId", body.grantId);
+  if (body && body.resetGrant) bru.setVar("resetGrant", body.resetGrant);
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

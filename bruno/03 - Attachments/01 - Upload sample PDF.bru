@@ -1,0 +1,40 @@
+meta {
+  name: Upload sample PDF
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/attachments
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+}
+
+body:multipart-form {
+  file: @file(../files/sample.pdf)
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.id) bru.setVar("attachmentId", body.id);
+}
+
+tests {
+  test("HTTP 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Attachment id returned", function() {
+    expect(res.getBody()).to.have.property("id");
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

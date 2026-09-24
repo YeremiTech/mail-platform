@@ -1,0 +1,32 @@
+meta {
+  name: Preview template v1
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/templates/{{templateSlug}}/versions/1/preview
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{ "name": "Bruno v1" }
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

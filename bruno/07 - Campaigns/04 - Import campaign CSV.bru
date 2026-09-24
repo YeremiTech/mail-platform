@@ -1,0 +1,36 @@
+meta {
+  name: Import campaign CSV
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/campaigns/import-csv
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+}
+
+body:multipart-form {
+  metadata: '''{"subject":"Bruno CSV campaign","templateKey":"{{templateSlug}}","purpose":"TRANSACTIONAL","commonVariables":{"name":"CSV"},"attachmentIds":[]}''' @contentType(application/json)
+  file: @file(../files/campaign.csv)
+}
+
+script:post-response {
+  const body = res.getBody(); if (body && body.batchId) bru.setVar("csvCampaignId", body.batchId);
+}
+
+tests {
+  test("HTTP 202", function() {
+    expect(res.getStatus()).to.equal(202);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

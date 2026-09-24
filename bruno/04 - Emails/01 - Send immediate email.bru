@@ -1,0 +1,48 @@
+meta {
+  name: Send immediate email
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/emails
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+  Idempotency-Key: bruno-mail-{{runId}}
+}
+
+body:json {
+{
+  "subject": "Bruno immediate email {{runId}}",
+  "templateKey": "{{templateSlug}}",
+  "variables": {"name": "Bruno Immediate"},
+  "recipients": [
+    {"email": "{{mailRecipient}}", "type": "TO", "displayName": "Bruno Recipient"},
+    {"email": "cc-{{runId}}@example.test", "type": "CC", "displayName": "Bruno CC"},
+    {"email": "bcc-{{runId}}@example.test", "type": "BCC", "displayName": "Bruno BCC"}
+  ],
+  "attachmentIds": ["{{attachmentId}}"],
+  "priority": "TRANSACTIONAL"
+}
+}
+
+script:post-response {
+  const body = res.getBody(); if (body && body.id) bru.setVar("mailId", body.id);
+}
+
+tests {
+  test("HTTP 202", function() {
+    expect(res.getStatus()).to.equal(202);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

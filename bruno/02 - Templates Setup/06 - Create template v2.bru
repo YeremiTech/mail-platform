@@ -1,0 +1,36 @@
+meta {
+  name: Create template v2
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/templates/{{templateSlug}}/versions
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "html": "<html><body><h1>Hola desde Bruno v2</h1><p>Plantilla Bruno v2.</p></body></html>",
+  "text": "Hola desde Bruno v2. Plantilla Bruno v2.",
+  "requiredVariables": []
+}
+}
+
+tests {
+  test("HTTP 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

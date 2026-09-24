@@ -1,0 +1,36 @@
+meta {
+  name: Configure webhook subscription
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/api/v1/webhooks/subscription
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{ "endpoint": "{{webhookEndpoint}}" }
+}
+
+script:post-response {
+  const body = res.getBody(); if (body && body.signingSecret) bru.setVar("webhookSigningSecret", body.signingSecret);
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

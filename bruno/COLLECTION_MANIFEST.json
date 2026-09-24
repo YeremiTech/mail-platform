@@ -1,0 +1,32 @@
+{
+  "projectVersion": "0.10.6-SNAPSHOT",
+  "restControllerOperationsCovered": 45,
+  "extraOperationalRequests": [
+    "health",
+    "liveness",
+    "readiness",
+    "openapi",
+    "actuator-info",
+    "actuator-metrics",
+    "prometheus",
+    "mailpit-messages",
+    "mailpit-message"
+  ],
+  "folders": [
+    "00 - Health and Contract",
+    "01 - Admin Setup",
+    "02 - Templates Setup",
+    "03 - Attachments",
+    "04 - Emails",
+    "05 - Document Copies",
+    "06 - Batches",
+    "07 - Campaigns",
+    "08 - Password Recovery",
+    "09 - Suppressions",
+    "10 - Webhooks",
+    "11 - Public Unsubscribe",
+    "12 - Outbox Admin",
+    "13 - Monitoring",
+    "99 - Cleanup"
+  ]
+}

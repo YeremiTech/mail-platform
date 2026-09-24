@@ -1,0 +1,39 @@
+meta {
+  name: Consume reset grant
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/password-recovery/grants/consume
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "grantId": "{{grantId}}",
+  "resetGrant": "{{resetGrant}}"
+}
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Grant resolves original subject", function() {
+    expect(res.getBody().subjectReference).to.equal("bruno-user-" + bru.getVar("runId"));
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

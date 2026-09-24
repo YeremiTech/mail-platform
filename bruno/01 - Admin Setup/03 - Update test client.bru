@@ -1,0 +1,38 @@
+meta {
+  name: Update test client
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/admin/clients/{{testClientId}}
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: admin
+  X-Internal-Api-Key: {{adminApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "enabled": true,
+  "requestsPerMinute": 1000,
+  "webhookAllowedHost": "{{webhookAllowedHost}}",
+  "dailyTransactionalLimit": 10000,
+  "dailyBulkLimit": 20000
+}
+}
+
+tests {
+  test("HTTP 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Disable webhook subscription
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/webhooks/subscription
+  body: none
+  auth: none
+}
+
+headers {
+  X-Client-Id: {{testClientId}}
+  X-Internal-Api-Key: {{clientApiKey}}
+}
+
+tests {
+  test("HTTP 204", function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}

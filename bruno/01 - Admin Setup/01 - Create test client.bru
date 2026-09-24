@@ -1,0 +1,68 @@
+meta {
+  name: Create test client
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/admin/clients
+  body: json
+  auth: none
+}
+
+headers {
+  X-Client-Id: admin
+  X-Internal-Api-Key: {{adminApiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "clientId": "{{testClientId}}",
+  "displayName": "Bruno Automated Test Client",
+  "requestsPerMinute": 1000,
+  "ttlDays": 1,
+  "permissions": [
+    "EMAIL_SEND", "EMAIL_READ", "EMAIL_CANCEL", "ATTACHMENT_WRITE",
+    "BATCH_READ", "BATCH_WRITE", "CAMPAIGN_READ", "CAMPAIGN_WRITE",
+    "TEMPLATE_READ", "TEMPLATE_WRITE", "SUPPRESSION_READ", "SUPPRESSION_WRITE",
+    "WEBHOOK_READ", "WEBHOOK_WRITE", "PASSWORD_RECOVERY", "DOCUMENT_SEND", "METRICS_READ"
+  ]
+}
+}
+
+script:pre-request {
+  const runId = Date.now().toString();
+  bru.setVar("runId", runId);
+  bru.setVar("testClientId", "bruno-" + runId);
+  bru.setVar("templateSlug", "bruno-template");
+  bru.setVar("recoveryEmail", "recovery-" + runId + "@example.test");
+  bru.setVar("suppressionEmail", "suppressed-" + runId + "@example.test");
+  bru.setVar("mailRecipient", "mail-" + runId + "@example.test");
+  bru.setVar("batchRecipient", "batch-" + runId + "@example.test");
+  bru.setVar("campaignRecipient", "campaign-" + runId + "@example.test");
+  bru.setVar("documentRecipient", "document-" + runId + "@example.test");
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.apiKey) bru.setVar("clientApiKey", body.apiKey);
+  if (body && body.credentialId) bru.setVar("primaryCredentialId", body.credentialId);
+}
+
+tests {
+  test("HTTP 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Client credential returned", function() {
+    const body = res.getBody();
+    expect(body).to.have.property("apiKey");
+    expect(body.clientId).to.equal(bru.getVar("testClientId"));
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 30000
+}
