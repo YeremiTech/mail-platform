@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;background:#f5f7fb;font-family:Arial,sans-serif;color:#182230">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center" style="padding:32px 16px">
+<table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;background:#fff;border-radius:12px"><tr><td style="padding:32px">
+<h1 style="font-size:22px;margin:0 0 24px">Duplicado de comprobante</h1>
+<p>Hola <strong th:text="${customerName}">Cliente</strong>:</p>
+<p><strong th:text="${issuerName}">Emisor</strong> te envía una copia de tu <span th:text="${documentType}">comprobante</span>.</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="8" style="background:#f8fafc;border-radius:8px">
+<tr><td>Número</td><td align="right" th:text="${documentNumber}">F001-123</td></tr>
+<tr><td>Total</td><td align="right"><span th:text="${currency}">PEN</span> <span th:text="${amount}">0.00</span></td></tr>
+</table>
+<p>El comprobante se encuentra adjunto en formato PDF.</p>
+<p style="font-size:13px;color:#667085;margin-top:28px">Este correo es una copia del documento emitido. Si tienes una consulta, contacta al emisor.</p>
+</td></tr></table></td></tr></table></body></html>

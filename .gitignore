@@ -1,0 +1,20 @@
+target/
+.ci-evidence/
+.idea/
+.project
+.classpath
+.settings/
+*.iml
+.DS_Store
+.env
+logs/
+storage/
+
+# Never commit credentials, dumps, or operational evidence
+*.dump
+*.dump.sha256
+backups/
+*.pgpass
+
+__pycache__/
+*.pyc

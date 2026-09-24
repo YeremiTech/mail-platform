@@ -1,0 +1,198 @@
+{
+  "uid": "mail-platform-v010",
+  "title": "Mail Platform — Operations",
+  "tags": [
+    "mail",
+    "outbox",
+    "smtp"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 40,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Pending and processing emails",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(mail_messages_queued)",
+          "legendFormat": "queued"
+        },
+        {
+          "expr": "sum(mail_messages_retrying)",
+          "legendFormat": "retrying"
+        },
+        {
+          "expr": "sum(mail_messages_processing)",
+          "legendFormat": "processing"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Oldest eligible mail age (seconds)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "max(mail_messages_oldest_pending_seconds)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Dead outbox events",
+      "type": "stat",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(mail_outbox_dead)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Failed webhooks",
+      "type": "stat",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(mail_webhooks_dead)"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Pending campaign recipients",
+      "type": "stat",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(mail_campaign_recipients_staged)"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Antivirus scan results",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "targets": [
+        {
+          "expr": "sum by (result) (rate(mail_attachment_scans_total[5m]))",
+          "legendFormat": "{{result}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Metrics refresh healthy",
+      "type": "stat",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "targets": [
+        {
+          "expr": "min(mail_metrics_refresh_healthy)"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Campaign recipients skipped due to suppression",
+      "type": "stat",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 21
+      },
+      "targets": [
+        {
+          "expr": "sum(mail_campaign_recipients_suppressed)"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Active opt-out links",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "expr": "sum(mail_marketing_unsubscribe_tokens_active)",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 24
+      }
+    },
+    {
+      "id": 10,
+      "title": "Confirmed opt-outs (last hour)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "expr": "sum(mail_marketing_unsubscribe_requests_last_hour)",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 24
+      }
+    }
+  ]
+}

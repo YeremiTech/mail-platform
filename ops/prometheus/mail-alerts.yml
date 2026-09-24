@@ -1,0 +1,59 @@
+groups:
+  - name: mail-platform
+    rules:
+      - alert: MailMetricsRefreshFailed
+        expr: mail_metrics_refresh_healthy == 0 or (time() - mail_metrics_last_success_epoch > 180)
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: Mail Platform cannot refresh operational gauges.
+      - alert: MailOutboxDead
+        expr: mail_outbox_dead > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: The outbox contains permanently failed events.
+      - alert: MailQueueBacklog
+        expr: mail_messages_oldest_pending_seconds > 900
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: At least one eligible email has been pending over 15 minutes.
+      - alert: MailWebhookDead
+        expr: mail_webhooks_dead > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Some webhook callbacks exhausted their retry attempts.
+      - alert: MailMetricsMissing
+        expr: absent(mail_metrics_refresh_healthy)
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: No Mail Platform application metrics are being scraped.
+      - alert: MailRabbitMQUnavailable
+        expr: mail_rabbitmq_available == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: An API instance cannot connect to RabbitMQ.
+      - alert: MailMarketingSuppressionUnusualVolume
+        expr: max(mail_campaign_recipients_suppressed_last_hour) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: A large number of campaign recipients have been suppressed.
+      - alert: MailOptOutRequestsUnusualVolume
+        expr: sum(mail_marketing_unsubscribe_requests_last_hour) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: An unusual number of marketing opt-out links were consumed recently.

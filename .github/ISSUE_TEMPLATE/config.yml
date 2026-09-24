@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Integration guide
+    url: https://github.com/YeremiTech/mail-platform/blob/main/docs/INTEGRATION_GUIDE.md
+    about: Password recovery, document copies and starter usage.
+  - name: Operations & production readiness
+    url: https://github.com/YeremiTech/mail-platform/blob/main/docs/PRODUCTION_READINESS_ES.md
+    about: Deployment, acceptance checks and operational gaps.

@@ -1,0 +1,52 @@
+rule_files:
+  - mail-alerts.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'mail_outbox_dead{instance="api1"}'
+        values: '0 1 1 1 1 1 1'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: MailOutboxDead
+        exp_alerts:
+          - exp_labels:
+              instance: api1
+              severity: critical
+            exp_annotations:
+              summary: The outbox contains permanently failed events.
+  - interval: 1m
+    input_series:
+      - series: 'mail_messages_oldest_pending_seconds{instance="api1"}'
+        values: '1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: MailQueueBacklog
+        exp_alerts:
+          - exp_labels:
+              instance: api1
+              severity: warning
+            exp_annotations:
+              summary: At least one eligible email has been pending over 15 minutes.
+  - interval: 1m
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: MailMetricsMissing
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+            exp_annotations:
+              summary: No Mail Platform application metrics are being scraped.
+  - interval: 1m
+    input_series:
+      - series: 'mail_rabbitmq_available{instance="api1"}'
+        values: '1 0 0 0 0'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: MailRabbitMQUnavailable
+        exp_alerts:
+          - exp_labels:
+              instance: api1
+              severity: critical
+            exp_annotations:
+              summary: An API instance cannot connect to RabbitMQ.
